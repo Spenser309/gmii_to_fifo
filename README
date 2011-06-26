@@ -1,0 +1,6 @@
+Author: Spenser Gilliland <Spenser309@gmail.com>
+License: GPL
+
+I wrote these when I was designing a network switch but realized that I need to 
+implement packet queues instead of fifos.  Therefore, I decided to release 
+these in case anyone was interested in using them on another project.  

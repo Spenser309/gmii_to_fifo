@@ -69,54 +69,7 @@ begin
 	begin
 		-- Wait 100 ns for global reset to finish
 		wait for 100 ns;
-		gmii_rx_er <= '0';
-		
-		
-		gmii_rx_dv <= '1';
-		-- Place stimulus here
-		
-		CLEAN_RCV: for i in 1 to 64 loop -- Clean reception of data into the fifo
-			if( i < 7) then gmii_rxd <= "10101010"; end if; -- Preamble
-			if( i = 8) then gmii_rxd <= "10101011"; end if; -- SFD
-			if( i > 8) then gmii_rxd <=	std_logic_vector(to_unsigned( i, 8 )); end if; -- Data (Counting Pattern)
-			wait for clk_period;
-		end loop;
-		
-		gmii_rx_dv <= '0';
-		gmii_rxd <= (others => '0');
-		
-		wait for clk_period*11; -- standard interframe gap
-		
-		-- Error condition #1
-		gmii_rx_dv <= '1';
-		
-		FIFO_FULL_ER: for i in 1 to 64 loop -- Possible Error condition where the RX FIFO is full
-			if( i < 7) then gmii_rxd <= "10101010"; end if; -- Preamble
-			if( i = 8) then gmii_rxd <= "10101011"; end if; -- SFD
-			if( i > 8) then gmii_rxd <=	std_logic_vector(to_unsigned( i, 8 )); end if; -- Data (Counting Pattern)
-			if( i = 35) then fifo_almost_full <= '1'; end if; -- Uhh ohh fifo full at octet 35;
-			if( i = 39) then fifo_almost_full <= '0'; end if; -- Back online but I have to drop that entire rest of the packet
-			wait for clk_period;
-		end loop;
-		
-		gmii_rx_dv <= '0';
-		gmii_rxd <= (others => '0');
-		
-		-- Error Condition #2
-		gmii_rx_dv <= '1';
-		
-		RX_ER: for i in 1 to 64 loop -- Possible Error condition where the RX FIFO is full
-			if( i < 7) then gmii_rxd <= "10101010"; end if; -- Preamble
-			if( i = 8) then gmii_rxd <= "10101011"; end if; -- SFD
-			if( i > 8) then gmii_rxd <=	std_logic_vector(to_unsigned( i, 8 )); end if; -- Data (Counting Pattern)
-			if( i = 35) then gmii_rx_er <= '1'; end if; -- Uhh ohh tx_er at octet 35 drop the rest of the packet;
-			wait for clk_period;
-		end loop;
-		
-		gmii_rx_dv <= '0';
-		gmii_rxd <= (others => '0');
-		
-		wait for clk_period*11;
+
 
 		wait; -- will wait forever
 	end process;
